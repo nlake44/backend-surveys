@@ -1,2 +1,4 @@
 # backend-surveys
-Go backend for survey app
+Python backend for survey app
+
+#Installation
