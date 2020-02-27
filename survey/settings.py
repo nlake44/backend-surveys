@@ -25,8 +25,7 @@ SECRET_KEY = 'd$gmr8a_=^-bm+@m+%-c**1vnxct@a_!pa(fjc7f=)5(avk3pd'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['localhost', '0.0.0.0', '127.0.0.1', '[::1]']
 
 # Application definition
 
