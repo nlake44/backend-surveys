@@ -11,3 +11,6 @@ pip install --upgrade pip
 pip install django
 pip install djangorestframework
 
+# To run
+source env/bin/activate
+python3 manage.py runserver 0.0.0.0:8080

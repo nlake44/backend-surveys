@@ -22,6 +22,10 @@ from django.urls import path
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
+router.register(r'peersurvey', views.PeerSurveyViewSet)
+router.register(r'managersurvey', views.ManagerSurveyViewSet)
+router.register(r'person', views.PersonViewSet)
+router.register(r'survey', views.SurveyViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
