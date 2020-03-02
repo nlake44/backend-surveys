@@ -7,8 +7,8 @@ class Person(models.Model):
   first_name = models.CharField(max_length=64)
   last_name = models.CharField(max_length=64)
   email = models.EmailField(max_length=254)
-  peers = models.ManyToManyField("self")
-  direct_reports = models.ManyToManyField("self")
+  peers = models.ManyToManyField("self", blank=True)
+  direct_reports = models.ManyToManyField("self", blank=True)
 
 # Top level survey model.
 class Survey(models.Model):

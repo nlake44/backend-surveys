@@ -15,7 +15,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class PersonSerializer(serializers.HyperlinkedModelSerializer):
   class Meta:
     model = Person
-    fields = ['first_name', 'last_name', 'email']
+    fields = ['first_name', 'last_name', 'email', 'direct_reports', 'peers']
 
 class SurveySerializer(serializers.HyperlinkedModelSerializer):
   class Meta:
