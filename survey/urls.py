@@ -20,12 +20,12 @@ from django.contrib import admin
 from django.urls import path
 
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'groups', views.GroupViewSet)
-router.register(r'peersurvey', views.PeerSurveyViewSet)
-router.register(r'managersurvey', views.ManagerSurveyViewSet)
-router.register(r'person', views.PersonViewSet)
-router.register(r'survey', views.SurveyViewSet)
+#router.register(r'users', views.UserViewSet)
+#router.register(r'groups', views.GroupViewSet)
+router.register(r'peersurvey', views.PeerSurveyViewSet, basename='peersurvey')
+router.register(r'managersurvey', views.ManagerSurveyViewSet, basename='managersurvey')
+router.register(r'person', views.PersonViewSet, basename='person')
+router.register(r'survey', views.SurveyViewSet, basename='survey')
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
