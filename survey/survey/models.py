@@ -9,29 +9,33 @@ class Person(models.Model):
   email = models.EmailField(max_length=254)
   peers = models.ManyToManyField("self", blank=True)
   direct_reports = models.ManyToManyField("self", blank=True)
+  created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)
 
 # Top level survey model.
 class Survey(models.Model):
-  filled = models.BooleanField(default=False)
-  creation_date = models.DateField()
-  last_updated = models.DateField()
+  created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)
+  person = models.ForeignKey(Person, on_delete=models.CASCADE)
 
 # Peer survey model.
 class PeerSurvey(models.Model):
   id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
   survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
-  person = models.ForeignKey(Person, on_delete=models.CASCADE)
+  filled = models.BooleanField(default=False)
+  created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)
 
   # Questions.
-  values = models.IntegerField(
+  values = models.IntegerField(null=True,
     validators=[MaxValueValidator(5), MinValueValidator(1)])
-  analytical = models.IntegerField(
+  analytical = models.IntegerField(null=True,
     validators=[MaxValueValidator(5), MinValueValidator(1)])
-  execution = models.IntegerField(
+  execution = models.IntegerField(null=True,
     validators=[MaxValueValidator(5), MinValueValidator(1)])
-  leadership = models.IntegerField(
+  leadership = models.IntegerField(null=True,
     validators=[MaxValueValidator(5), MinValueValidator(1)])
-  presence = models.IntegerField(
+  presence = models.IntegerField(null=True,
     validators=[MaxValueValidator(5), MinValueValidator(1)])
   keep_doing = models.CharField(max_length=4096)
   stop_doing = models.CharField(max_length=4096)
@@ -40,28 +44,30 @@ class PeerSurvey(models.Model):
 class ManagerSurvey(models.Model):
   id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
   survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
-  person = models.ForeignKey(Person, on_delete=models.CASCADE)
+  filled = models.BooleanField(default=False)
+  created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)
 
   # Questions.
-  would_recommend = models.IntegerField(
+  would_recommend = models.IntegerField(null=True,
     validators=[MaxValueValidator(5), MinValueValidator(1)])
-  opportunities = models.IntegerField(
+  opportunities = models.IntegerField(null=True,
     validators=[MaxValueValidator(5), MinValueValidator(1)])
-  communicates = models.IntegerField(
+  communicates = models.IntegerField(null=True,
     validators=[MaxValueValidator(5), MinValueValidator(1)])
-  feedback = models.IntegerField(
+  feedback = models.IntegerField(null=True,
     validators=[MaxValueValidator(5), MinValueValidator(1)])
-  priorities = models.IntegerField(
+  priorities = models.IntegerField(null=True,
     validators=[MaxValueValidator(5), MinValueValidator(1)])
-  information = models.IntegerField(
+  information = models.IntegerField(null=True,
     validators=[MaxValueValidator(5), MinValueValidator(1)])
-  expertise = models.IntegerField(
+  expertise = models.IntegerField(null=True,
     validators=[MaxValueValidator(5), MinValueValidator(1)])
-  perspective = models.IntegerField(
+  perspective = models.IntegerField(null=True,
     validators=[MaxValueValidator(5), MinValueValidator(1)])
-  decisions = models.IntegerField(
+  decisions = models.IntegerField(null=True,
     validators=[MaxValueValidator(5), MinValueValidator(1)])
-  collaborates = models.IntegerField(
+  collaborates = models.IntegerField(null=True,
     validators=[MaxValueValidator(5), MinValueValidator(1)])
   keep_doing = models.CharField(max_length=4096)
   stop_doing = models.CharField(max_length=4096)
