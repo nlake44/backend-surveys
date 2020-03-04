@@ -24,10 +24,11 @@ class SurveyTestCase(TestCase):
   def setUp(self):
     person = Person.objects.create(first_name="John", last_name="Doe", email="john@doe.com")
     Survey.objects.create(person=person)
-    Survey.objects.create(person=person)
 
-  def test_survey_url(self):
-    pass 
+  def test_survey_get(self):
+    person = Person.objects.get(first_name="John")
+    survey = Survey.objects.get(person=person)
+    self.assertEquals(survey.person.last_name, "Doe") 
 
 class PeerSurveyTestCase(TestCase):
   def setUp(self):
@@ -36,7 +37,10 @@ class PeerSurveyTestCase(TestCase):
     PeerSurvey.objects.create(filled=False, survey=survey)
 
   def test_peer_survey_url(self):
-    pass 
+    peer_survey = PeerSurvey.objects.get(filled=False)
+    c = Client()
+    response = c.get('/peersurvey/' + str(peer_survey.id))
+    self.assertTrue(response.status_code, 200)
 
 class ManagerSurveyTestCase(TestCase):
   def setUp(self):
