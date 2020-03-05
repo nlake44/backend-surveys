@@ -25,6 +25,6 @@ urlpatterns = [
   path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
   path('persons', views.get_persons, name='person-list'),
   path('person/<int:id>/', views.person, name='person-detail'),
-  path('peersurvey/<uuid:id>/', views.get_peer_survey, name='peer-survey-detail'),
-  path('managersurvey/<uuid:id>/', views.get_manager_survey, name='manager-survey-detail')
+  path('peersurvey/<uuid:id>/', views.peer_survey, name='peer-survey-detail'),
+  path('managersurvey/<uuid:id>/', views.manager_survey, name='manager-survey-detail')
 ]

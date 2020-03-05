@@ -17,16 +17,44 @@ def person(request, id):
   data = json.dumps(struct[0]['fields'])
   return HttpResponse(data)
 
-def get_peer_survey(request, id):
+def peer_survey(request, id):
+  if request.method == 'GET':
+    return __get_peer_survey(reqest, id)
+  elif request.method == 'POST':
+    return __post_peer_survey(request, id)
+  else:
+    return HttpResponse('<h1>Page was found</h1>')
+
+def manager_survey(request, id):
+  if request.method == 'GET':
+    return __get_peer_survey(reqest, id)
+  elif request.method == 'POST':
+    return __post_peer_survey(request, id)
+  else:
+    return HttpResponse('<h1>Page was found</h1>')
+
+def __get_manager_survey(request, id):
+  obj = ManagerSurvey.objects.get(pk=id)
+  data = serializers.serialize('json', [obj, ])
+  struct = json.loads(data)
+  data = json.dumps(struct[0]['fields'])
+  return HttpResponse(data)
+
+def __post_peer_survet(request, id):
+  obj = ManagerSurvey.objects.get(pk=id)
+  struct = json.loads(request.content)
+  print(struct)
+  return HttpResponse("{'success': 'true'}")
+
+def __get_peer_survey(request, id):
   obj = PeerSurvey.objects.get(pk=id)
   data = serializers.serialize('json', [obj, ])
   struct = json.loads(data)
   data = json.dumps(struct[0]['fields'])
   return HttpResponse(data)
 
-def get_manager_survey(request, id):
-  obj = ManagerSurvey.objects.get(pk=id)
-  data = serializers.serialize('json', [obj, ])
-  struct = json.loads(data)
-  data = json.dumps(struct[0]['fields'])
-  return HttpResponse(data)
+def __post_peer_survet(request, id):
+  obj = PeerSurvey.objects.get(pk=id)
+  struct = json.loads(request.content)
+  print(struct)
+  return HttpResponse("{'success': 'true'}")
