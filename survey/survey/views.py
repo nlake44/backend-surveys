@@ -3,6 +3,7 @@ from django.core import serializers
 from django.contrib.auth.models import User, Group
 from django.http import JsonResponse, HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
+from django.views.decorators.http import require_http_methods
 from survey.survey.models import Person, PeerSurvey, ManagerSurvey
 
 def get_persons(request):
@@ -10,6 +11,7 @@ def get_persons(request):
   person_list = list(persons)
   return JsonResponse(person_list, safe=False)
 
+@require_http_methods(["GET"])
 def person(request, id):
   obj = Person.objects.get(pk=id)
   data = serializers.serialize('json', [obj, ])
@@ -17,6 +19,7 @@ def person(request, id):
   data = json.dumps(struct[0]['fields'])
   return HttpResponse(data)
 
+@require_http_methods(["GET", "POST"])
 def peer_survey(request, id):
   if request.method == 'GET':
     return __get_peer_survey(reqest, id)
@@ -25,6 +28,7 @@ def peer_survey(request, id):
   else:
     return HttpResponseNotFound('<h1>Page was not found</h1>')
 
+@require_http_methods(["GET", "POST"])
 def manager_survey(request, id):
   if request.method == 'GET':
     return __get_peer_survey(reqest, id)
