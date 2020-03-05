@@ -4,8 +4,12 @@ from survey.survey.models import Person, Survey, PeerSurvey, ManagerSurvey
 
 class PersonTestCase(TestCase):
   def setUp(self):
-    Person.objects.create(first_name="John", last_name="Doe", email="john@doe.com")
-    Person.objects.create(first_name="Jane", last_name="Doe", email="jane@doe.com")
+    Person.objects.create(first_name="John",
+                          last_name="Doe",
+                          email="john@doe.com")
+    Person.objects.create(first_name="Jane",
+                          last_name="Doe",
+                          email="jane@doe.com")
 
   def test_names(self):
     jane = Person.objects.get(first_name="Jane")
@@ -13,12 +17,22 @@ class PersonTestCase(TestCase):
     self.assertEqual(jane.last_name, "Doe")
     self.assertEqual(john.last_name, "Doe")
 
-  def test_person_url(self):
+  def test_person_list_url(self):
     c = Client()
     response = c.get('/persons')
     self.assertEqual(response.status_code, 200)
     self.assertTrue("Jane" in str(response.content))
     self.assertTrue("John" in str(response.content))
+
+  def test_person_detail_url(self):
+    c = Client()
+    response = c.get('/person/1/')
+    self.assertEqual(response.status_code, 200)
+    self.assertTrue("John" in str(response.content))
+
+    response = c.get('/person/2/')
+    self.assertEqual(response.status_code, 200)
+    self.assertTrue("Jane" in str(response.content))
 
 class SurveyTestCase(TestCase):
   def setUp(self):
