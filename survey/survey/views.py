@@ -1,7 +1,7 @@
 import json
 from django.core import serializers
 from django.contrib.auth.models import User, Group
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
 from survey.survey.models import Person, PeerSurvey, ManagerSurvey
 
@@ -23,7 +23,7 @@ def peer_survey(request, id):
   elif request.method == 'POST':
     return __post_peer_survey(request, id)
   else:
-    return HttpResponse('<h1>Page was found</h1>')
+    return HttpResponseNotFound('<h1>Page was not found</h1>')
 
 def manager_survey(request, id):
   if request.method == 'GET':
@@ -31,7 +31,7 @@ def manager_survey(request, id):
   elif request.method == 'POST':
     return __post_peer_survey(request, id)
   else:
-    return HttpResponse('<h1>Page was found</h1>')
+    return HttpResponseNotFound('<h1>Page was not found</h1>')
 
 def __get_manager_survey(request, id):
   obj = ManagerSurvey.objects.get(pk=id)
