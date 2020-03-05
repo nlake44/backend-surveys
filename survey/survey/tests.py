@@ -53,12 +53,19 @@ class PeerSurveyTestCase(TestCase):
   def test_peer_survey_url(self):
     peer_survey = PeerSurvey.objects.get(filled=False)
     c = Client()
-    response = c.get('/peersurvey/' + str(peer_survey.id))
+    response = c.get('/peersurvey/' + str(peer_survey.id) + '/')
     self.assertTrue(response.status_code, 200)
+    self.assertTrue('keep_doing' in str(response.content))
 
 class ManagerSurveyTestCase(TestCase):
   def setUp(self):
-    Survey.objects.create(filled=True)
-    Survey.objects.create(filled=False)
-    ManagerSurvey.objects.create()
-    ManagerSurvey.objects.create()
+    person = Person.objects.create(first_name="John", last_name="Doe", email="john@doe.com")
+    survey = Survey.objects.create(person=person)
+    ms = ManagerSurvey.objects.create(filled=False, survey=survey)
+
+  def test_manager_survey_url(self):
+    manager_survey = ManagerSurvey.objects.get(filled=False)
+    c = Client()
+    response = c.get('/managersurvey/' + str(manager_survey.id) + '/')
+    self.assertTrue(response.status_code, 200)
+    self.assertTrue('keep_doing' in str(response.content))
