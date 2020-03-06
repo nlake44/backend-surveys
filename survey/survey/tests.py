@@ -1,15 +1,16 @@
 from django.test import Client
 from django.test import TestCase
-from survey.survey.models import Person, Survey, PeerSurvey, ManagerSurvey
+from survey.survey.models import Person, Survey, PeerSurvey, ManagerSurvey, APIKey
 
 class PersonTestCase(TestCase):
   def setUp(self):
     Person.objects.create(first_name="John",
                           last_name="Doe",
                           email="john@doe.com")
-    Person.objects.create(first_name="Jane",
-                          last_name="Doe",
-                          email="jane@doe.com")
+    person = Person.objects.create(first_name="Jane",
+                                   last_name="Doe",
+                                   email="jane@doe.com")
+    APIKey.objects.create(person=person)
 
   def test_names(self):
     jane = Person.objects.get(first_name="Jane")
@@ -18,21 +19,38 @@ class PersonTestCase(TestCase):
     self.assertEqual(john.last_name, "Doe")
 
   def test_person_list_url(self):
+    jane = Person.objects.get(first_name="Jane")
+    key = APIKey.objects.get(person=jane)
     c = Client()
-    response = c.get('/persons')
+    response = c.get('/persons', {'APIKEY': str(key.id)})
     self.assertEqual(response.status_code, 200)
     self.assertTrue("Jane" in str(response.content))
     self.assertTrue("John" in str(response.content))
+
+  def test_person_list_url_with_bad_apikey(self):
+    c = Client()
+    response = c.get('/persons', {'APIKEY': 'badkey'})
+    self.assertEqual(response.status_code, 403)
 
   def test_person_detail_url(self):
+    jane = Person.objects.get(first_name="Jane")
+    key = APIKey.objects.get(person=jane)
     c = Client()
-    response = c.get('/person/1/')
+    response = c.get('/person/1/', {'APIKEY': str(key.id)})
     self.assertEqual(response.status_code, 200)
     self.assertTrue("John" in str(response.content))
 
-    response = c.get('/person/2/')
+    response = c.get('/person/2/', {'APIKEY': str(key.id)})
     self.assertEqual(response.status_code, 200)
     self.assertTrue("Jane" in str(response.content))
+
+  def test_person_detail_url_with_bad_key(self):
+    c = Client()
+    response = c.get('/person/1/', {'APIKEY': 'badkey'})
+    self.assertEqual(response.status_code, 403)
+
+    response = c.get('/person/2/', {'APIKEY': 'badkey'})
+    self.assertEqual(response.status_code, 403)
 
 class SurveyTestCase(TestCase):
   def setUp(self):

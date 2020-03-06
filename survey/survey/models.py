@@ -71,3 +71,11 @@ class ManagerSurvey(models.Model):
     validators=[MaxValueValidator(5), MinValueValidator(1)])
   keep_doing = models.CharField(max_length=4096)
   stop_doing = models.CharField(max_length=4096)
+
+
+# API Keys for super admins.
+class APIKey(models.Model):
+  id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+  person = models.ForeignKey(Person, on_delete=models.CASCADE)
+  created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)

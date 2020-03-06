@@ -21,3 +21,13 @@ pip install django
 source env/bin/activate
 
 python3 manage.py runserver 0.0.0.0:8080
+
+# Make Person API Calls
+Send a request with the following parameter: APIKEY
+where the API key is a UUID (primary key) from the APIKey model.
+
+## Example
+persons/1/?APIKEY=1234-1234-1234-1234
+
+# Make Survey API Calls
+Send a request with the correct UUID of the survey.

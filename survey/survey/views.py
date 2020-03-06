@@ -5,12 +5,16 @@ from django.http import JsonResponse, HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 from survey.survey.models import Person, PeerSurvey, ManagerSurvey
+from survey.survey.helpers import requires_api_key
 
+@requires_api_key
+@require_http_methods(["GET"])
 def get_persons(request):
   persons = Person.objects.all().values()
   person_list = list(persons)
   return JsonResponse(person_list, safe=False)
 
+@requires_api_key
 @require_http_methods(["GET"])
 def person(request, id):
   obj = Person.objects.get(pk=id)
