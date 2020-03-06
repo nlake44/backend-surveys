@@ -14,8 +14,9 @@ def requires_api_key(function):
     except ValueError:
       raise PermissionDenied
 
-    key_object = APIKey.objects.get(pk=key)
-    if key_object == None:
+    try:
+      key_object = APIKey.objects.get(pk=key)
+    except APIKey.DoesNotExist:
       raise PermissionDenied
     return function(request, *args, **kwargs)
   return _inner

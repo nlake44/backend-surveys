@@ -49,7 +49,7 @@ class PersonTestCase(TestCase):
     response = c.get('/person/1/', {'APIKEY': 'badkey'})
     self.assertEqual(response.status_code, 403)
 
-    response = c.get('/person/2/', {'APIKEY': 'badkey'})
+    response = c.get('/person/2/', {'APIKEY': 'c63148a7-5455-48d3-ac33-59ae3508d9ad'})
     self.assertEqual(response.status_code, 403)
 
 class SurveyTestCase(TestCase):
