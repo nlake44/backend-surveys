@@ -22,7 +22,7 @@ def person(request, id):
 @require_http_methods(["GET", "POST"])
 def peer_survey(request, id):
   if request.method == 'GET':
-    return __get_peer_survey(reqest, id)
+    return __get_peer_survey(request, id)
   elif request.method == 'POST':
     return __post_peer_survey(request, id)
   else:
@@ -31,9 +31,9 @@ def peer_survey(request, id):
 @require_http_methods(["GET", "POST"])
 def manager_survey(request, id):
   if request.method == 'GET':
-    return __get_peer_survey(reqest, id)
+    return __get_manager_survey(request, id)
   elif request.method == 'POST':
-    return __post_peer_survey(request, id)
+    return __post_manager_survey(request, id)
   else:
     return HttpResponseNotFound('<h1>Page was not found</h1>')
 
@@ -44,8 +44,13 @@ def __get_manager_survey(request, id):
   data = json.dumps(struct[0]['fields'])
   return HttpResponse(data)
 
+def __post_manager_survey(request, id):
+  obj = PeerSurvey.objects.get(pk=id)
+  struct = json.loads(request.content)
+  print(struct)
+  return HttpResponse("{'success': 'true'}")
 def __post_peer_survet(request, id):
-  obj = ManagerSurvey.objects.get(pk=id)
+  obj = PeerSurvey.objects.get(pk=id)
   struct = json.loads(request.content)
   print(struct)
   return HttpResponse("{'success': 'true'}")
@@ -57,8 +62,3 @@ def __get_peer_survey(request, id):
   data = json.dumps(struct[0]['fields'])
   return HttpResponse(data)
 
-def __post_peer_survet(request, id):
-  obj = PeerSurvey.objects.get(pk=id)
-  struct = json.loads(request.content)
-  print(struct)
-  return HttpResponse("{'success': 'true'}")
