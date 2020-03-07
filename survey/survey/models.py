@@ -8,7 +8,9 @@ class Person(models.Model):
   last_name = models.CharField(max_length=64)
   email = models.EmailField(max_length=254)
   peers = models.ManyToManyField("self", blank=True)
-  direct_reports = models.ManyToManyField("self", blank=True)
+  manager = models.ForeignKey("self",
+                              null=True,
+                              on_delete=models.CASCADE)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
 
