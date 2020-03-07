@@ -51,6 +51,7 @@ class PersonTestCase(TestCase):
     jane.manager = john
     jane.save()
     key = APIKey.objects.get(person=jane)
+
     c = Client()
     response = c.get('/person/2/', {'APIKEY': str(key.id)})
     self.assertEqual(response.status_code, 200)
@@ -61,6 +62,24 @@ class PersonTestCase(TestCase):
     self.assertEqual(response.status_code, 200)
     json_obj = json.loads(response.content)
     self.assertTrue(None == json_obj["manager"])
+
+  def test_person_detail_with_peers(self):
+    jane = Person.objects.get(first_name="Jane")
+    john = Person.objects.get(first_name="John")
+    jane.peers.add(john)
+    key = APIKey.objects.get(person=jane)
+
+    c = Client()
+    response = c.get('/person/2/', {'APIKEY': str(key.id)})
+    self.assertEqual(response.status_code, 200)
+    json_obj = json.loads(response.content)
+    self.assertTrue(john.id == json_obj["peers"][0])
+
+    response = c.get('/person/1/', {'APIKEY': str(key.id)})
+    self.assertEqual(response.status_code, 200)
+    json_obj = json.loads(response.content)
+    self.assertTrue(jane.id == json_obj["peers"][0])
+ 
 
   def test_person_detail_url_with_bad_key(self):
     c = Client()
