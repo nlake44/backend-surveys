@@ -23,6 +23,32 @@ def person(request, id):
   data = json.dumps(struct[0]['fields'])
   return HttpResponse(data)
 
+@requires_api_key
+@require_http_methods(["POST"])
+def create_or_update_person(request):
+  struct = json.loads(request.POST.get('data'))
+  if 'id' in struct:
+    return __update_person(struct)
+  else:
+    return __create_person(struct)
+
+def __create_person(json_person):
+  peers = Person.objects.filter(pk__in=json_person['peers'])
+  manager = Person.objects.get(pk=json_person['manager'])
+  new_person = Person.objects.create(first_name=json_person['first_name'],
+                                     last_name=json_person['last_name'],
+                                     email=json_person['email'],
+                                     manager=manager,
+                                     )
+  new_person.save()
+  for item in peers:
+    new_person.peers.add(item)
+  new_person.save()
+  return HttpResponse('{"id": ' + str(new_person.id) + '}')
+
+def __update_person(json_person):
+  return HttpResponse('place holder')
+
 @require_http_methods(["GET", "POST"])
 def peer_survey(request, id):
   if request.method == 'GET':
@@ -51,12 +77,11 @@ def __get_manager_survey(request, id):
 def __post_manager_survey(request, id):
   obj = PeerSurvey.objects.get(pk=id)
   struct = json.loads(request.content)
-  print(struct)
   return HttpResponse("{'success': 'true'}")
+
 def __post_peer_survet(request, id):
   obj = PeerSurvey.objects.get(pk=id)
   struct = json.loads(request.content)
-  print(struct)
   return HttpResponse("{'success': 'true'}")
 
 def __get_peer_survey(request, id):

@@ -3,6 +3,9 @@ from django.test import TestCase
 from survey.survey.models import Person, Survey, PeerSurvey, ManagerSurvey, APIKey
 import json
 
+import logging
+logging.disable(logging.CRITICAL)
+
 class PersonTestCase(TestCase):
   def setUp(self):
     Person.objects.create(first_name="John",
@@ -80,7 +83,6 @@ class PersonTestCase(TestCase):
     json_obj = json.loads(response.content)
     self.assertTrue(jane.id == json_obj["peers"][0])
  
-
   def test_person_detail_url_with_bad_key(self):
     c = Client()
     response = c.get('/person/1/', {'APIKEY': 'badkey'})
@@ -89,15 +91,48 @@ class PersonTestCase(TestCase):
     response = c.get('/person/2/', {'APIKEY': 'c63148a7-5455-48d3-ac33-59ae3508d9ad'})
     self.assertEqual(response.status_code, 403)
 
-  def test_person_detail_post_url(self):
+  def test_create_person(self):
     jane = Person.objects.get(first_name="Jane")
     key = APIKey.objects.get(person=jane)
     c = Client()
-    response = c.post('/person/3/', {'APIKEY': str(key.id)})
+    raj = {'first_name': 'Raj',
+           'last_name': 'Chohan',
+           'email': 'nchohan@intouchhealth.com',
+           'manager': 1,
+           'peers': [2]
+          }
+    json_blob = json.dumps(raj)
+    response = c.post('/createperson/',
+                      {'APIKEY': str(key.id),
+                       'data': json_blob
+                      }
+                     )
+    self.assertEqual(response.status_code, 200)
+
+    raj_verify = Person.objects.get(first_name="Raj")
+    self.assertEqual(raj_verify.last_name, "Chohan")
+    self.assertEqual(raj_verify.peers.all()[0], jane)
+
+  def test_update_person(self):
+    jane = Person.objects.get(first_name="Jane")
+    key = APIKey.objects.get(person=jane)
+    c = Client()
+    jane = {'email': 'jane@doe.net',
+            'id': jane.id
+           }
+    json_blob = json.dumps(jane)
+    response = c.post('/createperson/',
+                      {'APIKEY': str(key.id),
+                       'data': json_blob
+                      }
+                     )
+    self.assertEqual(response.status_code, 200)
 
 class SurveyTestCase(TestCase):
   def setUp(self):
-    person = Person.objects.create(first_name="John", last_name="Doe", email="john@doe.com")
+    person = Person.objects.create(first_name="John",
+                                   last_name="Doe",
+                                   email="john@doe.com")
     Survey.objects.create(person=person)
 
   def test_survey_get(self):
