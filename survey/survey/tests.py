@@ -2,6 +2,7 @@ from django.test import Client
 from django.test import TestCase
 from survey.survey.models import Person, Survey, PeerSurvey, ManagerSurvey, APIKey
 import json
+import uuid
 
 import logging
 logging.disable(logging.CRITICAL)
@@ -153,6 +154,13 @@ class PeerSurveyTestCase(TestCase):
     self.assertTrue(response.status_code, 200)
     self.assertTrue('keep_doing' in str(response.content))
 
+  def test_bad_key_for_peer_survey(self):
+    key = uuid.uuid4()
+    print(key)
+    c = Client()
+    response = c.get('/peersurvey/' + str(key) + '/')
+    self.assertTrue(response.status_code, 403)
+
 class ManagerSurveyTestCase(TestCase):
   def setUp(self):
     person = Person.objects.create(first_name="John", last_name="Doe", email="john@doe.com")
@@ -165,3 +173,8 @@ class ManagerSurveyTestCase(TestCase):
     response = c.get('/managersurvey/' + str(manager_survey.id) + '/')
     self.assertTrue(response.status_code, 200)
     self.assertTrue('keep_doing' in str(response.content))
+
+  def test_bad_key_for_manager_survey(self):
+    c = Client()
+    response = c.get('/managersurvey/badkey/')
+    self.assertTrue(response.status_code, 403)

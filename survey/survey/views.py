@@ -1,5 +1,6 @@
 import json
 from django.core import serializers
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User, Group
 from django.http import JsonResponse, HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
@@ -68,7 +69,10 @@ def manager_survey(request, id):
     return HttpResponseNotFound('<h1>Page was not found</h1>')
 
 def __get_manager_survey(request, id):
-  obj = ManagerSurvey.objects.get(pk=id)
+  try:
+    obj = ManagerSurvey.objects.get(pk=id)
+  except ManagerSurvey.DoesNotExist:
+    raise PermissionDenied
   data = serializers.serialize('json', [obj, ])
   struct = json.loads(data)
   data = json.dumps(struct[0]['fields'])
@@ -85,7 +89,10 @@ def __post_peer_survet(request, id):
   return HttpResponse("{'success': 'true'}")
 
 def __get_peer_survey(request, id):
-  obj = PeerSurvey.objects.get(pk=id)
+  try:
+    obj = PeerSurvey.objects.get(pk=id)
+  except PeerSurvey.DoesNotExist:
+    raise PermissionDenied
   data = serializers.serialize('json', [obj, ])
   struct = json.loads(data)
   data = json.dumps(struct[0]['fields'])
