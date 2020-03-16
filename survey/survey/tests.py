@@ -156,7 +156,6 @@ class PeerSurveyTestCase(TestCase):
 
   def test_bad_key_for_peer_survey(self):
     key = uuid.uuid4()
-    print(key)
     c = Client()
     response = c.get('/peersurvey/' + str(key) + '/')
     self.assertTrue(response.status_code, 403)
