@@ -83,7 +83,7 @@ def __post_manager_survey(request, id):
   struct = json.loads(request.content)
   return HttpResponse("{'success': 'true'}")
 
-def __post_peer_survet(request, id):
+def __post_peer_survey(request, id):
   obj = PeerSurvey.objects.get(pk=id)
   struct = json.loads(request.content)
   return HttpResponse("{'success': 'true'}")

@@ -22,7 +22,6 @@ from django.urls import path
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
   path('admin/', admin.site.urls),
-  path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
   path('persons', views.get_persons, name='person-list'),
   path('createperson/', views.create_or_update_person, name='person-create'),
   path('person/<int:id>/', views.person, name='person-detail'),
